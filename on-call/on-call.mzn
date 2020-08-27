@@ -16,11 +16,11 @@ constraint forall(d in DAY)(weekend_day[d] = ((d mod 7 = 1) \/ (d mod 7 = 2)));
 constraint forall(d in DAY)(business_day[d] = not weekend_day[d]);
 
 % 00:00 -> 09:00: MORNING
-% 09:00 -> 17:00: WORKING_HOURS
+% 09:00 -> 17:00: DAY_TIME
 % 17:00 -> 00:00: EVENING
-enum SHIFT = { OFF, MORNING, WORKING_HOURS, EVENING, MORNING_EVENING, ALL };
+enum SHIFT = { OFF, MORNING, DAY_TIME, EVENING, MORNING_EVENING, ALL };
 array[SHIFT] of int: hour_commitment 
-           = [   0,       9,             8,       7,              16,  24 ];
+           = [   0,       9,        8,       7,              16,  24 ];
 int: full_day_coverage = 24;
 int: morning_evening_coverage = 16;
 array[EMPLOYEE,DAY] of var SHIFT: roster;
@@ -28,8 +28,12 @@ array[EMPLOYEE,DAY] of var SHIFT: roster;
 % all days must be covered
 constraint forall(d in DAY where business_day[d])
   (sum(e in EMPLOYEE)(hour_commitment[roster[e,d]]) = morning_evening_coverage);
+constraint forall(d in DAY, e in EMPLOYEE where business_day[d])
+  (roster[e,d] in { OFF, MORNING, EVENING, MORNING_EVENING });
 constraint forall(d in DAY where weekend_day[d])
   (sum(e in EMPLOYEE)(hour_commitment[roster[e,d]]) = full_day_coverage);
+constraint forall(d in DAY, e in EMPLOYEE where weekend_day[d])
+  (roster[e,d] in { OFF, ALL });
 
 array[EMPLOYEE] of var int: commitment;
 constraint forall(e in EMPLOYEE)(commitment[e] = sum(d in DAY)(hour_commitment[roster[e,d]]));
