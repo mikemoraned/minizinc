@@ -8,16 +8,19 @@
 int: nEmployees = 6;
 set of int: EMPLOYEE = 1..nEmployees;
 
-int: nDays = 30; 
+int: nDays = 10; 
 set of int: DAY = 1..nDays;
 array[DAY] of var bool: business_day;
 array[DAY] of var bool: weekend_day;
 constraint forall(d in DAY)(weekend_day[d] = ((d mod 7 = 1) \/ (d mod 7 = 2)));
 constraint forall(d in DAY)(business_day[d] = not weekend_day[d]);
 
-enum SHIFT = { OFF, MORNING, EVENING, BOTH };
+% 00:00 -> 09:00: MORNING
+% 09:00 -> 17:00: WORKING_HOURS
+% 17:00 -> 00:00: EVENING
+enum SHIFT = { OFF, MORNING, WORKING_HOURS, EVENING, MORNING_EVENING, ALL };
 array[SHIFT] of int: hour_commitment 
-           = [   0,      12,      12,   24 ];
+           = [   0,       9,             8,       7,              16,  24 ];
 int: full_day_coverage = 24;
 array[EMPLOYEE,DAY] of var SHIFT: roster;
 
