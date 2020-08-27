@@ -22,10 +22,14 @@ enum SHIFT = { OFF, MORNING, WORKING_HOURS, EVENING, MORNING_EVENING, ALL };
 array[SHIFT] of int: hour_commitment 
            = [   0,       9,             8,       7,              16,  24 ];
 int: full_day_coverage = 24;
+int: morning_evening_coverage = 16;
 array[EMPLOYEE,DAY] of var SHIFT: roster;
 
 % all days must be covered
-constraint forall(d in DAY)(sum(e in EMPLOYEE)(hour_commitment[roster[e,d]]) = full_day_coverage);
+constraint forall(d in DAY where business_day[d])
+  (sum(e in EMPLOYEE)(hour_commitment[roster[e,d]]) = morning_evening_coverage);
+constraint forall(d in DAY where weekend_day[d])
+  (sum(e in EMPLOYEE)(hour_commitment[roster[e,d]]) = full_day_coverage);
 
 array[EMPLOYEE] of var int: commitment;
 constraint forall(e in EMPLOYEE)(commitment[e] = sum(d in DAY)(hour_commitment[roster[e,d]]));
