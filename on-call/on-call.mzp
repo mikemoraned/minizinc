@@ -1,0 +1,16 @@
+{
+    "builtinSolverConfigs": [
+    ],
+    "openFiles": [
+        "on-call.mzn"
+    ],
+    "openTab": 1,
+    "projectFiles": [
+        "on-call.mzn"
+    ],
+    "projectSolverConfigs": [
+    ],
+    "selectedBuiltinConfigId": "org.gecode.gecode",
+    "selectedBuiltinConfigVersion": "6.1.1",
+    "version": 105
+}
