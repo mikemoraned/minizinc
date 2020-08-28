@@ -35,8 +35,6 @@ constraint forall(d in DAY where weekend_day[d])
 constraint forall(d in DAY, e in EMPLOYEE where weekend_day[d])
   (roster[e,d] in { OFF, ALL });
 
-array[EMPLOYEE] of var int: commitment;
-constraint forall(e in EMPLOYEE)(commitment[e] = sum(d in DAY)(hour_commitment[roster[e,d]]));
 
 % avoid 2 consecutive business days
 constraint forall(d in 1..(nDays-1), e in EMPLOYEE where (business_day[d] /\ business_day[d+1]))
@@ -47,6 +45,10 @@ constraint forall(e in EMPLOYEE, d in DAY where business_day[d])
   (hour_commitment[roster[e,d]] <= 12);
 
 % fairness
-% constraint forall(e in EMPLOYEE)(commitment[e] < (nDays / nEmployees) + 1);
+array[EMPLOYEE] of var int: commitment;
+constraint forall(e in EMPLOYEE)(commitment[e] = sum(d in DAY)(hour_commitment[roster[e,d]]));
 
-solve satisfy;
+var int: max_disparity;
+constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
+
+solve minimize max_disparity;
