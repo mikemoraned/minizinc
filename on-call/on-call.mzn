@@ -8,7 +8,7 @@
 int: nEmployees = 6;
 set of int: EMPLOYEE = 1..nEmployees;
 
-int: nDays = 10;
+int: nDays = 4 * 7; % 4 * 7 is taken "as one calendar month"
 set of int: DAY = 1..nDays;
 
 enum DAY_OF_WEEK = { MON, TUE, WED, THU, FRI, SAT, SUN };
@@ -63,11 +63,15 @@ constraint forall(e in EMPLOYEE, d in 1..nDays-2 where day_of_week[d] = FRI)
   (sum(w_d in d..d+2, s in SHIFT where is_weekend_shift[day_of_week[w_d],s] /\ assignment[w_d,s] = e)
     (shift_hour_commitment[s]) <= 48);
   
-% fairness
 array[EMPLOYEE] of var int: commitment;
 constraint forall(e in EMPLOYEE)
   (commitment[e] = sum(d in DAY, s in SHIFT where assignment[d,s] = e)(shift_hour_commitment[s]));
 
+% avoid more than 100 hours in each calendar month
+constraint forall(e in EMPLOYEE)
+  (commitment[e] <= 100);
+
+% fairness
 var int: max_disparity;
 constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
 
