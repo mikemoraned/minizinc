@@ -12,7 +12,7 @@ int: nDays = 10;
 set of int: DAY = 1..nDays;
 
 enum DAY_OF_WEEK = { MON, TUE, WED, THU, FRI, SAT, SUN };
-array[DAY] of DAY_OF_WEEK: day_of_week = [ to_enum(DAY_OF_WEEK, d mod card(X))) | d in DAY];
+array[DAY] of DAY_OF_WEEK: day_of_week = [ to_enum(DAY_OF_WEEK, 1 + ((d - 1 ) mod card(DAY_OF_WEEK))) | d in DAY];
 enum SHIFT = { MORNING, DAY_TIME, EVENING };
 array[SHIFT] of int: shift_hour_commitment = 
              [       9,        8,       7 ];
@@ -41,21 +41,21 @@ array[DAY_OF_WEEK] of bool: is_business_day = [ not is_weekend_day[d] | d in DAY
  
 set of int: ASSIGNED = 0..nEmployees;
 int: no_employee = 0;
-array[DAY,SHIFT] of var EMPLOYEE: assignment;
+array[DAY,SHIFT] of var ASSIGNED: assignment;
 
 % all expected shifts must be covered
-% constraint forall(d in DAY, s in SHIFT where shift_expected[day_of_week[d],s])
-%   (assignment[d,s] != no_employee);
-% constraint forall(d in DAY, s in SHIFT where not shift_expected[day_of_week[d],s])
-%   (assignment[d,s] = no_employee);
+constraint forall(d in DAY, s in SHIFT where shift_expected[day_of_week[d],s])
+  (assignment[d,s] != no_employee);
+constraint forall(d in DAY, s in SHIFT where not shift_expected[day_of_week[d],s])
+  (assignment[d,s] = no_employee);
 
 % avoid 2 consecutive business days
 % constraint forall(d in 1..nDays-1, s in SHIFT where is_business_day[day_of_week[d]])
 %   (assignment[d,s] != assignment[d+1,s]);
 
 % avoid more than 12 hours in each 24 hour period during the business week
-% constraint forall(e in EMPLOYEE, d in DAY where is_business_day[day_of_week[d]])
-%   (sum(s in SHIFT where assignment[d,s] = e)(shift_hour_commitment[s]) <= 12);
+constraint forall(e in EMPLOYEE, d in DAY where is_business_day[day_of_week[d]])
+  (sum(s in SHIFT where assignment[d,s] = e)(shift_hour_commitment[s]) <= 12);
 
 % fairness
 % array[EMPLOYEE] of var int: commitment;
@@ -67,4 +67,4 @@ array[DAY,SHIFT] of var EMPLOYEE: assignment;
 % solve minimize max_disparity;
 solve satisfy;
 
-output ["\(day_of_week)"];
+% output ["\(day_of_week)"];
