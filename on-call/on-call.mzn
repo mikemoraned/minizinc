@@ -8,10 +8,11 @@
 int: nEmployees = 6;
 set of int: EMPLOYEE = 1..nEmployees;
 
-int: nWeeks = 2;
-set of int: WEEK = 1..nWeeks;
+int: nDays = 10;
+set of int: DAY = 1..nDays;
 
 enum DAY_OF_WEEK = { MON, TUE, WED, THU, FRI, SAT, SUN };
+array[DAY] of DAY_OF_WEEK: day_of_week = [ to_enum(DAY_OF_WEEK, d mod card(X))) | d in DAY];
 enum SHIFT = { MORNING, DAY_TIME, EVENING };
 array[SHIFT] of int: shift_hour_commitment = 
              [       9,        8,       7 ];
@@ -26,7 +27,7 @@ array[DAY_OF_WEEK, SHIFT] of bool: shift_expected =
   | true, false, true,    % FRI
   | true,  true, true,    % SAT
   | true,  true, true |]; % SUN
-array[DAY_OF_WEEK, SHIFT] of DAY_TYPE: is_weekend_shift = 
+array[DAY_OF_WEEK, SHIFT] of bool: is_weekend_shift = 
  [|false, false, false,    % MON
   |false, false, false,    % TUE
   |false, false, false,    % WED
@@ -40,21 +41,21 @@ array[DAY_OF_WEEK] of bool: is_business_day = [ not is_weekend_day[d] | d in DAY
  
 set of int: ASSIGNED = 0..nEmployees;
 int: no_employee = 0;
-array[WEEK,DAY_OF_WEEK,SHIFT] of var EMPLOYEE: assignment;
+array[DAY,SHIFT] of var EMPLOYEE: assignment;
 
 % all expected shifts must be covered
-constraint forall(w in WEEK, d in DAY_OF_WEEK, s in SHIFT where shift_expected[d,s])
-  (assignment[w,d,s] != no_employee);
-constraint forall(w in WEEK, d in DAY_OF_WEEK, s in SHIFT where not shift_expected[d,s])
-  (assignment[w,d,s] = no_employee);
+% constraint forall(d in DAY, s in SHIFT where shift_expected[day_of_week[d],s])
+%   (assignment[d,s] != no_employee);
+% constraint forall(d in DAY, s in SHIFT where not shift_expected[day_of_week[d],s])
+%   (assignment[d,s] = no_employee);
 
 % avoid 2 consecutive business days
-constraint forall(w in WEEK, d in DAY_OF_WEEK, s in SHIFT where is_business_day[d])
-  (assignment[w,d,s] -> (roster[e,d+1] = OFF));
+% constraint forall(d in 1..nDays-1, s in SHIFT where is_business_day[day_of_week[d]])
+%   (assignment[d,s] != assignment[d+1,s]);
 
 % avoid more than 12 hours in each 24 hour period during the business week
-constraint forall(e in EMPLOYEE, d in DAY where day_type[week_day[d]] = BUSINESS)
-  (hour_commitment[roster[e,d]] <= 12);
+% constraint forall(e in EMPLOYEE, d in DAY where is_business_day[day_of_week[d]])
+%   (sum(s in SHIFT where assignment[d,s] = e)(shift_hour_commitment[s]) <= 12);
 
 % fairness
 % array[EMPLOYEE] of var int: commitment;
@@ -65,3 +66,5 @@ constraint forall(e in EMPLOYEE, d in DAY where day_type[week_day[d]] = BUSINESS
 
 % solve minimize max_disparity;
 solve satisfy;
+
+output ["\(day_of_week)"];
