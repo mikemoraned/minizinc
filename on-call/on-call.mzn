@@ -59,11 +59,12 @@ constraint forall(e in EMPLOYEE, d in DAY where is_business_day[day_of_week[d]])
   (sum(s in SHIFT where assignment[d,s] = e)(shift_hour_commitment[s]) <= 12);
 
 % fairness
-% array[EMPLOYEE] of var int: commitment;
-% constraint forall(e in EMPLOYEE)(commitment[e] = sum(d in DAY)(hour_commitment[roster[e,d]]));
+array[EMPLOYEE] of var int: commitment;
+constraint forall(e in EMPLOYEE)
+  (commitment[e] = sum(d in DAY, s in SHIFT where assignment[d,s] = e)(shift_hour_commitment[s]));
 
-% var int: max_disparity;
-% constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
+var int: max_disparity;
+constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
 
 % solve minimize max_disparity;
 solve satisfy;
