@@ -48,7 +48,8 @@ constraint forall(e in EMPLOYEE, d in DAY where business_day[d])
 array[EMPLOYEE] of var int: commitment;
 constraint forall(e in EMPLOYEE)(commitment[e] = sum(d in DAY)(hour_commitment[roster[e,d]]));
 
-var int: max_disparity;
-constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
+% var int: max_disparity;
+% constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
 
-solve minimize max_disparity;
+% solve minimize max_disparity;
+solve satisfy;
