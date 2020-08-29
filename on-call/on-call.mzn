@@ -8,7 +8,8 @@
 int: nEmployees = 6;
 set of int: EMPLOYEE = 1..nEmployees;
 
-int: nDays = 10; 
+int: nWeeks = 2;
+int: nDays = nWeeks * 7; 
 set of int: DAY = 1..nDays;
 
 enum DAY_OF_WEEK = { MON, TUE, WED, THU, FRI, SAT, SUN };
@@ -18,11 +19,12 @@ array[DAY_OF_WEEK] of DAY_TYPE: day_type = [ BUSINESS, BUSINESS, BUSINESS, BUSIN
 % 00:00 -> 09:00: MORNING
 % 09:00 -> 17:00: DAY_TIME
 % 17:00 -> 00:00: EVENING
+% MORNING_EVENING: MORNING, EVENING
+% ALL: MORNING, DAY_TIME, EVENING
 enum SHIFT = { OFF, MORNING, DAY_TIME, EVENING, MORNING_EVENING, ALL };
 array[SHIFT] of int: hour_commitment 
            = [   0,       9,        8,       7,              16,  24 ];
 int: full_day_coverage = 24;
-
 int: morning_evening_coverage = 16;
 array[EMPLOYEE,DAY] of var SHIFT: roster;
 
