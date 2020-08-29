@@ -50,8 +50,9 @@ constraint forall(d in DAY, s in SHIFT where not shift_expected[day_of_week[d],s
   (assignment[d,s] = no_employee);
 
 % avoid 2 consecutive business days
-% constraint forall(d in 1..nDays-1, s in SHIFT where is_business_day[day_of_week[d]])
-%   (assignment[d,s] != assignment[d+1,s]);
+constraint forall(d in 1..nDays-1, s in SHIFT where (is_business_day[day_of_week[d]] /\ is_business_day[day_of_week[d+1]]))
+  (forall(e in EMPLOYEE)
+    (assignment[d,s] = e -> assignment[d+1,s] != e));
 
 % avoid more than 12 hours in each 24 hour period during the business week
 constraint forall(e in EMPLOYEE, d in DAY where is_business_day[day_of_week[d]])
