@@ -58,6 +58,11 @@ constraint forall(d in 1..nDays-1, s in SHIFT where (is_business_day[day_of_week
 constraint forall(e in EMPLOYEE, d in DAY where is_business_day[day_of_week[d]])
   (sum(s in SHIFT where assignment[d,s] = e)(shift_hour_commitment[s]) <= 12);
 
+% avoid more than 48 hours over the weekend (in other words, they cannot be on call the full weekend)
+constraint forall(e in EMPLOYEE, d in 1..nDays-2 where day_of_week[d] = FRI)
+  (sum(w_d in d..d+2, s in SHIFT where is_weekend_shift[day_of_week[w_d],s] /\ assignment[w_d,s] = e)
+    (shift_hour_commitment[s]) <= 48);
+  
 % fairness
 array[EMPLOYEE] of var int: commitment;
 constraint forall(e in EMPLOYEE)
