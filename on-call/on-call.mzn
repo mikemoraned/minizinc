@@ -5,7 +5,7 @@
 % 2 consecutive business days; or
 % More than 2 weekend days in one calendar month
 
-int: nEmployees = 6;
+int: nEmployees = 7;
 set of int: EMPLOYEE = 1..nEmployees;
 
 int: nDays = 4 * 7; % 4 * 7 is taken "as one calendar month"
@@ -64,10 +64,13 @@ constraint forall(e in EMPLOYEE, d in 1..nDays-2 where day_of_week[d] = FRI)
     (shift_hour_commitment[s]) <= 48);
   
 % avoid more than 2 weekend days in one calendar month for any employee
-% constraint forall(e in EMPLOYEE)
-%   (count([ is_weekend_day[day_of_week[d]] /\ (exists(s in SHIFT)(assignment[d,s] = e)) | d in DAY]) <= 2);
+array[EMPLOYEE] of var int: weekend_day_commitment;
+constraint forall(e in EMPLOYEE)
+  (weekend_day_commitment[e] = sum(d in DAY where is_weekend_day[day_of_week[d]])
+    (exists(s in SHIFT)(assignment[d,s] = e)));
+constraint forall(e in EMPLOYEE)
+  (weekend_day_commitment[e] <= 2);
 
-    
 array[EMPLOYEE] of var int: commitment;
 constraint forall(e in EMPLOYEE)
   (commitment[e] = sum(d in DAY, s in SHIFT where assignment[d,s] = e)(shift_hour_commitment[s]));
@@ -79,10 +82,10 @@ constraint forall(e in EMPLOYEE)
 % fairness
 var int: max_disparity;
 constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
-var float: avg_disparity;
-constraint avg_disparity = 
-  sum([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2])
-    / (card(EMPLOYEE) * card(EMPLOYEE));
+% var float: avg_disparity;
+% constraint avg_disparity = 
+%   sum([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2])
+%     / (card(EMPLOYEE) * card(EMPLOYEE));
 
 % churn
 int: flattened_size = nDays * card(SHIFT);
@@ -95,7 +98,7 @@ solve maximize consistency;
 % solve minimize avg_disparity;
 % solve satisfy;
 
-output [ "\(d), \(day_of_week[d]): \(assignment[d, MORNING]), \(assignment[d, DAY_TIME]), \(assignment[d, EVENING])\n" | d in DAY];
-output [ "commitment = \(commitment)" ];
+% output [ "\(d), \(day_of_week[d]): \(assignment[d, MORNING]), \(assignment[d, DAY_TIME]), \(assignment[d, EVENING])\n" | d in DAY];
+% output [ "commitment = \(commitment)" ];
 
 % output ["\(flattened)"];
