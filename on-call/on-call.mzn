@@ -80,7 +80,15 @@ constraint forall(e in EMPLOYEE)
 var int: max_disparity;
 constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
 
-% solve minimize max_disparity;
-solve satisfy;
+% churn
+int: flattened_size = nDays * card(SHIFT);
+array[1..flattened_size] of var ASSIGNED: flattened = [ assignment[d, s] | d in DAY, s in SHIFT];
+var float: consistency;
+constraint consistency = sum(d in 1..flattened_size-1)(flattened[d] = flattened[d+1]) / (flattened_size - 1);
 
-% output ["\(day_of_week)"];
+solve maximize consistency;
+
+% solve minimize max_disparity;
+% solve satisfy;
+
+% output ["\(flattened)"];
