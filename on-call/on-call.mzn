@@ -87,12 +87,12 @@ constraint avg_disparity =
 % churn
 int: flattened_size = nDays * card(SHIFT);
 array[1..flattened_size] of var ASSIGNED: flattened = [ assignment[d, s] | d in DAY, s in SHIFT];
-var float: consistency;
-constraint consistency = sum(d in 1..flattened_size-1)(flattened[d] = flattened[d+1]) / (flattened_size - 1);
+var int: consistency;
+constraint consistency = sum(d in 1..flattened_size-1)(flattened[d] = flattened[d+1]);
 
-% solve maximize consistency;
+solve maximize consistency;
 
-solve minimize avg_disparity;
+% solve minimize avg_disparity;
 % solve satisfy;
 
 output [ "\(d), \(day_of_week[d]): \(assignment[d, MORNING]), \(assignment[d, DAY_TIME]), \(assignment[d, EVENING])\n" | d in DAY];
