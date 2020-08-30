@@ -79,13 +79,17 @@ constraint forall(e in EMPLOYEE)
 constraint forall(e in EMPLOYEE)
   (commitment[e] <= 100);
 
+% everyone must do at least some hours
+constraint forall(e in EMPLOYEE)
+  (commitment[e] > 0);
+
 % fairness
 var int: max_disparity;
 constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
-% var float: avg_disparity;
-% constraint avg_disparity = 
-%   sum([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2])
-%     / (card(EMPLOYEE) * card(EMPLOYEE));
+var float: avg_disparity;
+constraint avg_disparity = 
+  sum([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2])
+    / (card(EMPLOYEE) * card(EMPLOYEE));
 
 % churn
 int: flattened_size = nDays * card(SHIFT);
@@ -98,7 +102,7 @@ solve maximize consistency;
 % solve minimize avg_disparity;
 % solve satisfy;
 
-% output [ "\(d), \(day_of_week[d]): \(assignment[d, MORNING]), \(assignment[d, DAY_TIME]), \(assignment[d, EVENING])\n" | d in DAY];
-% output [ "commitment = \(commitment)" ];
+output [ "\(d), \(day_of_week[d]): \(assignment[d, MORNING]), \(assignment[d, DAY_TIME]), \(assignment[d, EVENING])\n" | d in DAY];
+output [ "commitment = \(commitment), consistency = \(consistency), avg_disparity = \(avg_disparity)" ];
 
 % output ["\(flattened)"];
