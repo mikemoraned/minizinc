@@ -1,6 +1,14 @@
-Best found after 5 minuetes, optimising for consistency:
+# Results from sample runs
 
+```minizinc
+nt: nEmployees = 7;
+int: nDays = 4 * 7; % 4 * 7 is taken "as one calendar month"
+enum SHIFT = { MORNING, DAY_TIME, EVENING };
 ```
+
+Best found after 5 minutes, optimising for consistency (number of consecutive shifts done by the same person):
+
+```plain
 1, MON: 7, 0, 5
 2, TUE: 5, 0, 6
 3, WED: 6, 0, 5
