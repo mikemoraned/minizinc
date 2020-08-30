@@ -79,6 +79,10 @@ constraint forall(e in EMPLOYEE)
 % fairness
 var int: max_disparity;
 constraint max_disparity = max([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2]);
+var float: avg_disparity;
+constraint avg_disparity = 
+  sum([ abs(commitment[e1] - commitment[e2]) | e1 in EMPLOYEE, e2 in EMPLOYEE where e1 != e2])
+    / (card(EMPLOYEE) * card(EMPLOYEE));
 
 % churn
 int: flattened_size = nDays * card(SHIFT);
@@ -86,9 +90,9 @@ array[1..flattened_size] of var ASSIGNED: flattened = [ assignment[d, s] | d in 
 var float: consistency;
 constraint consistency = sum(d in 1..flattened_size-1)(flattened[d] = flattened[d+1]) / (flattened_size - 1);
 
-solve maximize consistency;
+% solve maximize consistency;
 
-% solve minimize max_disparity;
+solve minimize avg_disparity;
 % solve satisfy;
 
 % output ["\(flattened)"];
