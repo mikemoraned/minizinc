@@ -1,7 +1,7 @@
 # Results from sample runs
 
 ```minizinc
-nt: nEmployees = 7;
+int: nEmployees = 7;
 int: nDays = 4 * 7; % 4 * 7 is taken "as one calendar month"
 enum SHIFT = { MORNING, DAY_TIME, EVENING };
 ```
