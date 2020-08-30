@@ -96,5 +96,6 @@ solve maximize consistency;
 % solve satisfy;
 
 output [ "\(d), \(day_of_week[d]): \(assignment[d, MORNING]), \(assignment[d, DAY_TIME]), \(assignment[d, EVENING])\n" | d in DAY];
+output [ "commitment = \(commitment)" ];
 
 % output ["\(flattened)"];
