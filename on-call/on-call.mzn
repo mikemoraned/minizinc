@@ -95,4 +95,6 @@ constraint consistency = sum(d in 1..flattened_size-1)(flattened[d] = flattened[
 solve minimize avg_disparity;
 % solve satisfy;
 
+output [ "\(d), \(day_of_week[d]): \(assignment[d, MORNING]), \(assignment[d, DAY_TIME]), \(assignment[d, EVENING])\n" | d in DAY];
+
 % output ["\(flattened)"];
