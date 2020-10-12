@@ -8,6 +8,9 @@ enum SHIFT = { MORNING, DAY_TIME, EVENING };
 
 Best found after 5 minutes, optimising for consistency (number of consecutive shifts done by the same person):
 
+- 0: nobody on shift
+- 1 -> 7: id for person on shift
+
 ```plain
 1, MON: 7, 0, 5
 2, TUE: 5, 0, 6

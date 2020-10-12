@@ -28,7 +28,7 @@ array[DAY_OF_WEEK, SHIFT] of bool: shift_expected =
   | true,  true, true,    % SAT
   | true,  true, true |]; % SUN
 array[DAY_OF_WEEK, SHIFT] of bool: is_weekend_shift = 
- [|false, false, false,    % MON
+ [|true,  false, false,    % MON
   |false, false, false,    % TUE
   |false, false, false,    % WED
   |false, false, false,    % THU
