@@ -21,3 +21,11 @@ Running team-assignment.mzn
 ----------
 ==========
 ```
+
+```mermaid
+graph TD;
+    Bob -- 3 --> P1;
+    Sue -- 0 --> P2;
+    Robert -- 3 -->P3;
+    Alice -- 3 -->P1;
+```
