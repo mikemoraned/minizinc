@@ -1,0 +1,15 @@
+PERSON = { Bob, Sue, Robert, Alice };
+PROJECT = { P1, P2, P3 };
+
+%% preferences of each person
+PRIORITY = 0..card(PROJECT);
+preferences = array2d(PERSON, PROJECT,
+    % P1, P2, P3
+    [| 3,  1,  2    % Bob
+     | 0,  0,  0    % Sue (doesn't care)
+     | 1,  1,  3    % Robert
+     | 3,  2,  1 |] % Alice
+);
+%% limits on min/max people per project
+min_people = 1;
+max_people = [2, 3, 2];
