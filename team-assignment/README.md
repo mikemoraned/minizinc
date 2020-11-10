@@ -1,5 +1,12 @@
 # Simple Team Assignment
 
+```mermaid
+graph LR;
+    English["Model (English)"] -- Capture --> MiniZinc;
+    MiniZinc["Model (MiniZinc)"] -- Flatten --> FlatZinc;
+    FlatZinc["Model (FlatZinc)"] -- Solve --> Solution;
+```
+
 An example simple problem/solution
 
 ## Problem
