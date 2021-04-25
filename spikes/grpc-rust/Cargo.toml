@@ -8,6 +8,10 @@ edition = "2018"
 name = "helloworld-server"
 path = "src/server.rs"
 
+[[bin]] # Bin to run the HelloWorld gRPC client
+name = "helloworld-client"
+path = "src/client.rs"
+
 [dependencies]
 tonic = "0.4.2"
 prost = "0.7.0"
