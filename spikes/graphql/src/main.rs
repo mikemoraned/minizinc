@@ -72,6 +72,8 @@ async fn main() -> std::io::Result<()> {
     let schema = Schema::build(Query, EmptyMutation, EmptySubscription)
         .finish();
 
+    println!("{}", &schema.sdl());
+
     println!("Playground: http://localhost:8000");
 
     HttpServer::new(move || {
