@@ -2,6 +2,7 @@ use actix_web::{guard, web, App, HttpResponse, HttpServer, Result};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use async_graphql_actix_web::{Request, Response};
+use async_graphql::extensions::ApolloTracing;
 use async_graphql::*;
 
 struct Query;
@@ -13,7 +14,47 @@ impl Query {
     async fn add(&self, a: i32, b: i32) -> i32 {
         a + b
     }
+    async fn shapes(&self) -> Vec<Shape> {
+        vec![Shape::Circle(Circle { radius: 2.5}), Shape::Square(Square { width: 10.9 })]
+    }
 }
+
+struct Circle {
+    radius: f32,
+}
+
+#[Object]
+impl Circle {
+    async fn area(&self) -> f32 {
+        std::f32::consts::PI * self.radius * self.radius
+    }
+
+    async fn scale(&self, s: f32) -> Shape {
+        Circle { radius: self.radius * s }.into()
+    }
+}
+
+struct Square {
+    width: f32,
+}
+
+#[Object]
+impl Square {
+    async fn area(&self) -> f32 {
+        self.width * self.width
+    }
+
+    async fn scale(&self, s: f32) -> Shape {
+        Square { width: self.width * s }.into()
+    }
+}
+
+#[derive(Union)]
+enum Shape {
+    Circle(Circle),
+    Square(Square),
+}
+
 
 async fn index(schema: web::Data<LocalSchema>, req: Request) -> Response {
     schema.execute(req.into_inner()).await.into()
@@ -30,7 +71,10 @@ async fn index_playground() -> Result<HttpResponse> {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let schema = Schema::build(Query, EmptyMutation, EmptySubscription)
+        .extension(ApolloTracing)
         .finish();
+
+    println!("{}", &schema.sdl());
 
     println!("Playground: http://localhost:8000");
 
