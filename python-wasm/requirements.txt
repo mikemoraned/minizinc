@@ -1,0 +1,2 @@
+wasmer==1.0.0
+wasmer-compiler-cranelift==1.0.0
