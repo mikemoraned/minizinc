@@ -2,6 +2,7 @@ use actix_web::{guard, web, App, HttpResponse, HttpServer, Result};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use async_graphql_actix_web::{Request, Response};
+use async_graphql::extensions::ApolloTracing;
 use async_graphql::*;
 
 struct Query;
@@ -70,6 +71,7 @@ async fn index_playground() -> Result<HttpResponse> {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let schema = Schema::build(Query, EmptyMutation, EmptySubscription)
+        .extension(ApolloTracing)
         .finish();
 
     println!("{}", &schema.sdl());
