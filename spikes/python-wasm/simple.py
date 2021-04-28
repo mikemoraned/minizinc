@@ -1,16 +1,17 @@
-from wasmer import engine, Store, Module, Instance
-from wasmer_compiler_cranelift import Compiler
+from wasmtime import Store, Module, Instance, Func, FuncType
 
-# Let's define the store, that holds the engine, that holds the compiler.
-store = Store(engine.JIT(Compiler))
+store = Store()
+module = Module(store.engine, """
+  (module
+    (func $hello (import "" "hello"))
+    (func (export "run") (call $hello))
+  )
+""")
 
-# Let's compile the module to be able to execute it!
-module = Module(store, open('simple.wasm', 'rb').read())
+def say_hello():
+    print("Hello from Python!")
+hello = Func(store, FuncType([], []), say_hello)
 
-# Now the module is compiled, we can instantiate it.
-instance = Instance(module)
-
-# Call the exported `sum` function.
-result = instance.exports.sum(5, 37)
-
-print(result)  # 42!
+instance = Instance(store, module, [hello])
+run = instance.exports["run"]
+run()
