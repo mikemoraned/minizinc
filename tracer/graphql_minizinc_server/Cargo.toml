@@ -11,3 +11,5 @@ nom = "6.1.2"
 async-graphql = { version="2.8.4", features=["apollo_tracing"]}
 async-graphql-actix-web = "2.8.4"
 actix-web = "3.3.2"
+actix-http = "2.2.0"
+async-graphql-derive = "2.8.4"
