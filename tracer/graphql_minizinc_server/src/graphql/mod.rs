@@ -18,6 +18,10 @@ impl Query {
     async fn shapes(&self) -> Vec<Shape> {
         vec![Shape::Circle(Circle { radius: 2.5}), Shape::Square(Square { width: 10.9 })]
     }
+
+    async fn parameters(&self) -> Vec<MinizincParameter> {
+        vec![MinizincParameter::Integer(MinizincIntegerParameter{ name: "foop".into()})]
+    }
 }
 
 struct Circle {
@@ -54,6 +58,16 @@ impl Square {
 enum Shape {
     Circle(Circle),
     Square(Square),
+}
+
+#[derive(SimpleObject)]
+struct MinizincIntegerParameter {
+    name: String
+}
+
+#[derive(Union)]
+enum MinizincParameter {
+    Integer(MinizincIntegerParameter)
 }
 
 
