@@ -19,8 +19,9 @@ impl Query {
         vec![Shape::Circle(Circle { radius: 2.5}), Shape::Square(Square { width: 10.9 })]
     }
 
-    async fn parameters(&self) -> Vec<MinizincParameter> {
-        vec![MinizincParameter::Integer(MinizincIntegerParameter{ name: "foop".into()})]
+    async fn parameters(&self, context: &Context<'_>) -> Vec<MinizincParameter> {
+        // vec![MinizincParameter::Integer(MinizincIntegerParameter{ name: "foop".into()})]
+        context.data_unchecked::<MinizincParameters>().list.clone()
     }
 }
 
@@ -60,14 +61,30 @@ enum Shape {
     Square(Square),
 }
 
-#[derive(SimpleObject)]
+#[derive(Clone, SimpleObject)]
 struct MinizincIntegerParameter {
     name: String
 }
 
-#[derive(Union)]
+#[derive(Clone, Union)]
 enum MinizincParameter {
     Integer(MinizincIntegerParameter)
+}
+
+#[derive(Clone)]
+struct MinizincParameters {
+    list: Vec<MinizincParameter>
+}
+
+impl MinizincParameters {
+    pub fn new() -> Self {
+        MinizincParameters {
+            list: vec![
+                MinizincParameter::Integer(MinizincIntegerParameter{ name: "foop".into()}),
+                MinizincParameter::Integer(MinizincIntegerParameter{ name: "feep".into()})
+            ]
+        }
+    }
 }
 
 
@@ -85,6 +102,7 @@ async fn index_playground() -> Result<HttpResponse> {
 
 pub fn graphql_server() -> Result<Server, std::io::Error> {
     let schema = Schema::build(Query, EmptyMutation, EmptySubscription)
+        .data(MinizincParameters::new())
         .extension(ApolloTracing)
         .finish();
 
