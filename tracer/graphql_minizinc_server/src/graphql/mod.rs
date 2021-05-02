@@ -63,7 +63,7 @@ enum Shape {
 
 #[derive(Clone, SimpleObject)]
 pub struct MinizincIntegerParameter {
-    name: String
+    pub name: String
 }
 
 #[derive(Clone, Union)]
@@ -73,19 +73,19 @@ pub enum MinizincParameter {
 
 #[derive(Clone)]
 pub struct MinizincParameters {
-    list: Vec<MinizincParameter>
+    pub list: Vec<MinizincParameter>
 }
-
-impl MinizincParameters {
-    pub fn new() -> Self {
-        MinizincParameters {
-            list: vec![
-                MinizincParameter::Integer(MinizincIntegerParameter{ name: "foop".into()}),
-                MinizincParameter::Integer(MinizincIntegerParameter{ name: "feep".into()})
-            ]
-        }
-    }
-}
+//
+// impl MinizincParameters {
+//     pub fn new() -> Self {
+//         MinizincParameters {
+//             list: vec![
+//                 MinizincParameter::Integer(MinizincIntegerParameter{ name: "foop".into()}),
+//                 MinizincParameter::Integer(MinizincIntegerParameter{ name: "feep".into()})
+//             ]
+//         }
+//     }
+// }
 
 
 async fn index(schema: web::Data<LocalSchema>, req: Request) -> Response {

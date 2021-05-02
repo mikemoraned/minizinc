@@ -17,17 +17,17 @@ pub enum BaseType {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct Ident(String);
+pub struct Ident(pub String);
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct TiExprAndId {
-    base_type: BaseType,
-    ident: Ident
+    pub base_type: BaseType,
+    pub ident: Ident
 }
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Model {
-    expressions: Vec<TiExprAndId>
+    pub expressions: Vec<TiExprAndId>
 }
 
 type Res<T, U> = IResult<T, U, VerboseError<T>>;
