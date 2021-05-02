@@ -61,32 +61,20 @@ enum Shape {
     Square(Square),
 }
 
-#[derive(Clone, SimpleObject)]
+#[derive(SimpleObject, Clone, Debug, PartialEq, Eq)]
 pub struct MinizincIntegerParameter {
     pub name: String
 }
 
-#[derive(Clone, Union)]
+#[derive(Union, Clone, Debug, PartialEq, Eq)]
 pub enum MinizincParameter {
     Integer(MinizincIntegerParameter)
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MinizincParameters {
     pub list: Vec<MinizincParameter>
 }
-//
-// impl MinizincParameters {
-//     pub fn new() -> Self {
-//         MinizincParameters {
-//             list: vec![
-//                 MinizincParameter::Integer(MinizincIntegerParameter{ name: "foop".into()}),
-//                 MinizincParameter::Integer(MinizincIntegerParameter{ name: "feep".into()})
-//             ]
-//         }
-//     }
-// }
-
 
 async fn index(schema: web::Data<LocalSchema>, req: Request) -> Response {
     schema.execute(req.into_inner()).await.into()
