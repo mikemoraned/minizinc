@@ -1,5 +1,5 @@
 use crate::minizinc::{Model, TiExprAndId, BaseType};
-use crate::graphql::{MinizincParameters, MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter};
+use crate::graphql::{MinizincParameters, MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter, MinizincFloatParameter};
 
 pub fn parameters_from_model(model: &Model) -> MinizincParameters {
     MinizincParameters {
@@ -17,6 +17,10 @@ fn parameter_from_expression(expression: &TiExprAndId) -> Option<MinizincParamet
             MinizincParameter::Integer(
                 MinizincIntegerParameter{ name: expression.ident.0.clone()}
             )),
+        BaseType::FLOAT => Some(
+            MinizincParameter::Float(
+                MinizincFloatParameter{ name: expression.ident.0.clone()}
+            )),
         _ => None
     }
 }
@@ -25,7 +29,7 @@ fn parameter_from_expression(expression: &TiExprAndId) -> Option<MinizincParamet
 mod tests {
     use crate::conversion::parameter_from_expression;
     use crate::minizinc::{TiExprAndId, BaseType, Ident};
-    use crate::graphql::{MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter};
+    use crate::graphql::{MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter, MinizincFloatParameter};
 
     #[test]
     fn test_base_type_bool() {
@@ -52,6 +56,21 @@ mod tests {
                    Some(MinizincParameter::Integer(
                        MinizincIntegerParameter{
                            name: "int".into()
+                       })
+                   )
+        );
+    }
+
+    #[test]
+    fn test_base_type_float() {
+        assert_eq!(parameter_from_expression(
+            &TiExprAndId{
+                base_type: BaseType::FLOAT,
+                ident: Ident("float".into())
+            }),
+                   Some(MinizincParameter::Float(
+                       MinizincFloatParameter{
+                           name: "float".into()
                        })
                    )
         );

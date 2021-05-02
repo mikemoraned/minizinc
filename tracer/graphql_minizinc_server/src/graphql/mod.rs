@@ -71,10 +71,16 @@ pub struct MinizincIntegerParameter {
     pub name: String
 }
 
+#[derive(SimpleObject, Clone, Debug, PartialEq, Eq)]
+pub struct MinizincFloatParameter {
+    pub name: String
+}
+
 #[derive(Union, Clone, Debug, PartialEq, Eq)]
 pub enum MinizincParameter {
     Boolean(MinizincBooleanParameter),
-    Integer(MinizincIntegerParameter)
+    Integer(MinizincIntegerParameter),
+    Float(MinizincFloatParameter)
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
