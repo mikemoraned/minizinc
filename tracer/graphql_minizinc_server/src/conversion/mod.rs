@@ -3,28 +3,28 @@ use crate::graphql::{MinizincParameters, MinizincParameter, MinizincIntegerParam
 
 pub fn parameters_from_model(model: &Model) -> MinizincParameters {
     MinizincParameters {
-        list: model.expressions.iter().flat_map(parameter_from_expression).collect()
+        list: model.expressions.iter().map(parameter_from_expression).collect()
     }
 }
 
-fn parameter_from_expression(expression: &TiExprAndId) -> Option<MinizincParameter> {
+fn parameter_from_expression(expression: &TiExprAndId) -> MinizincParameter {
     match expression.base_type {
-        BaseType::BOOL => Some(
+        BaseType::BOOL =>
             MinizincParameter::Boolean(
                 MinizincBooleanParameter{ name: expression.ident.0.clone(), value: None }
-            )),
-        BaseType::INT => Some(
+            ),
+        BaseType::INT =>
             MinizincParameter::Integer(
                 MinizincIntegerParameter{ name: expression.ident.0.clone(), value: None }
-            )),
-        BaseType::FLOAT => Some(
+            ),
+        BaseType::FLOAT =>
             MinizincParameter::Float(
                 MinizincFloatParameter{ name: expression.ident.0.clone(), value: None }
-            )),
-        BaseType::STRING => Some(
+            ),
+        BaseType::STRING =>
             MinizincParameter::String(
                 MinizincStringParameter{ name: expression.ident.0.clone(), value: None }
-            )),
+            ),
     }
 }
 
@@ -41,12 +41,11 @@ mod tests {
                 base_type: BaseType::BOOL,
                 ident: Ident("bool".into())
             }),
-                   Some(MinizincParameter::Boolean(
+                   MinizincParameter::Boolean(
                        MinizincBooleanParameter{
                            name: "bool".into(),
                            value: None
                        })
-                   )
         );
     }
 
@@ -57,12 +56,11 @@ mod tests {
                 base_type: BaseType::INT,
                 ident: Ident("int".into())
             }),
-                   Some(MinizincParameter::Integer(
+                   MinizincParameter::Integer(
                        MinizincIntegerParameter{
                            name: "int".into(),
                            value: None
                        })
-                   )
         );
     }
 
@@ -72,7 +70,7 @@ mod tests {
             &TiExprAndId{
                 base_type: BaseType::FLOAT,
                 ident: Ident("float".into())
-            }).unwrap();
+            });
         if let MinizincParameter::Float(float_parameter) = converted {
             let expected_name : String = "float".into();
             assert_eq!(float_parameter.name, expected_name);
@@ -90,12 +88,11 @@ mod tests {
                 base_type: BaseType::STRING,
                 ident: Ident("string".into())
             }),
-                   Some(MinizincParameter::String(
+                   MinizincParameter::String(
                        MinizincStringParameter{
                            name: "string".into(),
                            value: None
                        })
-                   )
         );
     }
 }
