@@ -1,5 +1,5 @@
 use crate::minizinc::{Model, TiExprAndId, BaseType};
-use crate::graphql::{MinizincParameters, MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter, MinizincFloatParameter};
+use crate::graphql::{MinizincParameters, MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter, MinizincFloatParameter, MinizincStringParameter};
 
 pub fn parameters_from_model(model: &Model) -> MinizincParameters {
     MinizincParameters {
@@ -21,7 +21,10 @@ fn parameter_from_expression(expression: &TiExprAndId) -> Option<MinizincParamet
             MinizincParameter::Float(
                 MinizincFloatParameter{ name: expression.ident.0.clone()}
             )),
-        _ => None
+        BaseType::STRING => Some(
+            MinizincParameter::String(
+                MinizincStringParameter{ name: expression.ident.0.clone()}
+            )),
     }
 }
 
@@ -29,7 +32,7 @@ fn parameter_from_expression(expression: &TiExprAndId) -> Option<MinizincParamet
 mod tests {
     use crate::conversion::parameter_from_expression;
     use crate::minizinc::{TiExprAndId, BaseType, Ident};
-    use crate::graphql::{MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter, MinizincFloatParameter};
+    use crate::graphql::{MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter, MinizincFloatParameter, MinizincStringParameter};
 
     #[test]
     fn test_base_type_bool() {
@@ -71,6 +74,21 @@ mod tests {
                    Some(MinizincParameter::Float(
                        MinizincFloatParameter{
                            name: "float".into()
+                       })
+                   )
+        );
+    }
+
+    #[test]
+    fn test_base_type_string() {
+        assert_eq!(parameter_from_expression(
+            &TiExprAndId{
+                base_type: BaseType::STRING,
+                ident: Ident("string".into())
+            }),
+                   Some(MinizincParameter::String(
+                       MinizincStringParameter{
+                           name: "string".into()
                        })
                    )
         );
