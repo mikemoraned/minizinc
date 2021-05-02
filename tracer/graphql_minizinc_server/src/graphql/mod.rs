@@ -62,17 +62,17 @@ enum Shape {
 }
 
 #[derive(Clone, SimpleObject)]
-struct MinizincIntegerParameter {
+pub struct MinizincIntegerParameter {
     name: String
 }
 
 #[derive(Clone, Union)]
-enum MinizincParameter {
+pub enum MinizincParameter {
     Integer(MinizincIntegerParameter)
 }
 
 #[derive(Clone)]
-struct MinizincParameters {
+pub struct MinizincParameters {
     list: Vec<MinizincParameter>
 }
 
@@ -100,9 +100,9 @@ async fn index_playground() -> Result<HttpResponse> {
         )))
 }
 
-pub fn graphql_server() -> Result<Server, std::io::Error> {
+pub fn graphql_server(parameters: &MinizincParameters) -> Result<Server, std::io::Error> {
     let schema = Schema::build(Query, EmptyMutation, EmptySubscription)
-        .data(MinizincParameters::new())
+        .data(parameters.clone())
         .extension(ApolloTracing)
         .finish();
 
