@@ -11,19 +11,19 @@ fn parameter_from_expression(expression: &TiExprAndId) -> Option<MinizincParamet
     match expression.base_type {
         BaseType::BOOL => Some(
             MinizincParameter::Boolean(
-                MinizincBooleanParameter{ name: expression.ident.0.clone()}
+                MinizincBooleanParameter{ name: expression.ident.0.clone(), value: None }
             )),
         BaseType::INT => Some(
             MinizincParameter::Integer(
-                MinizincIntegerParameter{ name: expression.ident.0.clone()}
+                MinizincIntegerParameter{ name: expression.ident.0.clone(), value: None }
             )),
         BaseType::FLOAT => Some(
             MinizincParameter::Float(
-                MinizincFloatParameter{ name: expression.ident.0.clone()}
+                MinizincFloatParameter{ name: expression.ident.0.clone(), value: None }
             )),
         BaseType::STRING => Some(
             MinizincParameter::String(
-                MinizincStringParameter{ name: expression.ident.0.clone()}
+                MinizincStringParameter{ name: expression.ident.0.clone(), value: None }
             )),
     }
 }
@@ -32,7 +32,7 @@ fn parameter_from_expression(expression: &TiExprAndId) -> Option<MinizincParamet
 mod tests {
     use crate::conversion::parameter_from_expression;
     use crate::minizinc::{TiExprAndId, BaseType, Ident};
-    use crate::graphql::{MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter, MinizincFloatParameter, MinizincStringParameter};
+    use crate::graphql::{MinizincParameter, MinizincIntegerParameter, MinizincBooleanParameter, MinizincStringParameter};
 
     #[test]
     fn test_base_type_bool() {
@@ -43,7 +43,8 @@ mod tests {
             }),
                    Some(MinizincParameter::Boolean(
                        MinizincBooleanParameter{
-                           name: "bool".into()
+                           name: "bool".into(),
+                           value: None
                        })
                    )
         );
@@ -58,7 +59,8 @@ mod tests {
             }),
                    Some(MinizincParameter::Integer(
                        MinizincIntegerParameter{
-                           name: "int".into()
+                           name: "int".into(),
+                           value: None
                        })
                    )
         );
@@ -66,17 +68,19 @@ mod tests {
 
     #[test]
     fn test_base_type_float() {
-        assert_eq!(parameter_from_expression(
+        let converted = parameter_from_expression(
             &TiExprAndId{
                 base_type: BaseType::FLOAT,
                 ident: Ident("float".into())
-            }),
-                   Some(MinizincParameter::Float(
-                       MinizincFloatParameter{
-                           name: "float".into()
-                       })
-                   )
-        );
+            }).unwrap();
+        if let MinizincParameter::Float(float_parameter) = converted {
+            let expected_name : String = "float".into();
+            assert_eq!(float_parameter.name, expected_name);
+            assert_eq!(float_parameter.value, None);
+        }
+        else {
+            panic!("not a Float")
+        }
     }
 
     #[test]
@@ -88,7 +92,8 @@ mod tests {
             }),
                    Some(MinizincParameter::String(
                        MinizincStringParameter{
-                           name: "string".into()
+                           name: "string".into(),
+                           value: None
                        })
                    )
         );

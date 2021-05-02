@@ -63,25 +63,29 @@ enum Shape {
 
 #[derive(SimpleObject, Clone, Debug, PartialEq, Eq)]
 pub struct MinizincBooleanParameter {
-    pub name: String
+    pub name: String,
+    pub value: Option<bool>
 }
 
 #[derive(SimpleObject, Clone, Debug, PartialEq, Eq)]
 pub struct MinizincIntegerParameter {
-    pub name: String
+    pub name: String,
+    pub value: Option<u32> // TODO: guessing a minizinc int is u32
 }
 
-#[derive(SimpleObject, Clone, Debug, PartialEq, Eq)]
+#[derive(SimpleObject, Clone, Debug, PartialEq)]
 pub struct MinizincFloatParameter {
-    pub name: String
+    pub name: String,
+    pub value: Option<f32> // TODO: guessing a minizinc int is f32
 }
 
 #[derive(SimpleObject, Clone, Debug, PartialEq, Eq)]
 pub struct MinizincStringParameter {
-    pub name: String
+    pub name: String,
+    pub value: Option<String>
 }
 
-#[derive(Union, Clone, Debug, PartialEq, Eq)]
+#[derive(Union, Clone, Debug, PartialEq)]
 pub enum MinizincParameter {
     Boolean(MinizincBooleanParameter),
     Integer(MinizincIntegerParameter),
@@ -89,7 +93,7 @@ pub enum MinizincParameter {
     String(MinizincStringParameter)
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct MinizincParameters {
     pub list: Vec<MinizincParameter>
 }
