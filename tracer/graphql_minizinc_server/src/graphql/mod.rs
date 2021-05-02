@@ -62,12 +62,18 @@ enum Shape {
 }
 
 #[derive(SimpleObject, Clone, Debug, PartialEq, Eq)]
+pub struct MinizincBooleanParameter {
+    pub name: String
+}
+
+#[derive(SimpleObject, Clone, Debug, PartialEq, Eq)]
 pub struct MinizincIntegerParameter {
     pub name: String
 }
 
 #[derive(Union, Clone, Debug, PartialEq, Eq)]
 pub enum MinizincParameter {
+    Boolean(MinizincBooleanParameter),
     Integer(MinizincIntegerParameter)
 }
 
