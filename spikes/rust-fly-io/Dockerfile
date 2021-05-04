@@ -15,7 +15,7 @@ COPY . .
 RUN cargo install --path .
 
 # Runtime image
-FROM debian:stretch
+FROM debian:buster
 
 # Run as "app" user
 RUN useradd -ms /bin/bash app
