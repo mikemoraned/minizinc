@@ -1,4 +1,4 @@
-FROM liuchong/rustup:stable AS builder
+FROM rust:1.51-buster AS builder
 
 # Make a fake Rust app to keep a cached layer of compiled crates
 RUN USER=root cargo new app
@@ -24,6 +24,6 @@ USER app
 WORKDIR /app
 
 # Get compiled binaries from builder's cargo install directory
-COPY --from=builder /root/.cargo/bin/ /app/
+COPY --from=builder /usr/local/cargo/bin/ /app/
 
 # No CMD or ENTRYPOINT, see fly.toml with `cmd` override.
