@@ -1,16 +1,16 @@
-# fly.toml file generated for rust-fly-io on 2021-05-04T12:28:13+01:00
+# fly.toml file generated for holy-grass-8371 on 2021-04-06T14:31:33-04:00
 
 app = "rust-fly-io"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
 
+[experimental]
+# required because we can't infer your binary's name
+cmd = "./rust-fly-io"
+
 [env]
 PORT = "8080"
-
-[experimental]
-  auto_rollback = true
-  cmd = "./rust-fly-io"
 
 [[services]]
 internal_port = 8080
