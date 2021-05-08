@@ -1,0 +1,1 @@
+#include <minizinc/solver.hh>
