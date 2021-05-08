@@ -14,10 +14,8 @@ COPY . .
 # Build (install) the actual binaries
 RUN cargo install --path .
 
-RUN echo -n BUILD_TAG= >> /root/.cargo/bin/.env
-RUN date >> /root/.cargo/bin/.env
-RUN echo >> /root/.cargo/bin/.env
-RUN cat /root/.cargo/bin/.env
+RUN date >> /root/.cargo/bin/build_tag
+RUN cat /root/.cargo/bin/build_tag
 
 # Runtime image
 FROM debian:stretch
@@ -30,9 +28,9 @@ WORKDIR /app
 
 # Get compiled binaries from builder's cargo install directory
 COPY --from=builder /root/.cargo/bin/ /app/
-COPY --from=builder /root/.cargo/bin/.env /app/.env
+COPY --from=builder /root/.cargo/bin/build_tag /app/build_tag
 
 RUN ls -al /app/
-RUN cat /app/.env
+RUN cat /app/build_tag
 
 # No CMD or ENTRYPOINT, see fly.toml with `cmd` override.
