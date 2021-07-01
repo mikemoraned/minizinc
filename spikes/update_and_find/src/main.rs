@@ -5,7 +5,8 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use testcontainers::{clients, images, Docker};
-    use redis::{Commands, RedisResult};
+    use redis::{Commands, RedisResult, Iter};
+    use std::collections::HashSet;
 
     #[tokio::test]
     async fn no_states_by_default() {
@@ -71,5 +72,30 @@ mod tests {
 
         current_state = con.hget("states", "some_id").unwrap();
         assert_eq!(expected_state, current_state);
+    }
+
+    #[tokio::test]
+    async fn can_find_all_states() {
+        let _ = pretty_env_logger::try_init();
+        let docker = clients::Cli::default();
+        let node = docker.run(images::redis::Redis::default());
+
+        let host_port = node.get_host_port(6379).unwrap();
+        let url = format!("redis://localhost:{}", host_port);
+
+        let client = redis::Client::open(url.as_ref()).unwrap();
+        let mut con = client.get_connection().unwrap();
+
+        con.hset::<&str, &str, &str, u8>("states", "id1", "state1").unwrap();
+        con.hset::<&str, &str, &str, u8>("states", "id2", "state2").unwrap();
+
+        let states_iter: Iter<'_, (String, String)>= con.hscan("states").unwrap();
+        let expected_states : HashSet<(String, String)>
+            = vec![
+                ("id1".to_string(), "state1".to_string()),
+                ("id2".to_string(), "state2".to_string())]
+            .into_iter().collect();
+        let states : HashSet<(String, String)> = states_iter.collect();
+        assert_eq!(expected_states, states);
     }
 }
