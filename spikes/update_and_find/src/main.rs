@@ -1,7 +1,14 @@
 use std::collections::HashSet;
+use std::env;
 
 fn main() {
-    println!("Hello, world!");
+    let redis_url = env::var("FLY_REDIS_CACHE_URL").unwrap();
+    println!("Using {}", redis_url);
+    let redis_client = redis::Client::open(redis_url).unwrap();
+    let client = Client::new(redis_client);
+    for (id, state) in client.find_all_states() {
+        println!("{}: {}", id, state);
+    }
 }
 
 struct Client {
