@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use std::env;
-use actix_web::{web, App, HttpRequest, HttpServer, Responder};
+use actix_web::{web, App, HttpRequest, HttpServer, Responder, HttpResponse};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -16,6 +17,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(client.clone())
             .route("/", web::get().to(list))
+            .route("/update", web::post().to(update))
     })
         .bind(("127.0.0.1", 8080))?
         .run()
@@ -28,6 +30,18 @@ async fn list(client: web::Data<Client>) -> impl Responder {
         .map(|(id, state)| format!("{}: {}", id, state))
         .collect::<Vec<String>>()
         .join("\n")
+}
+
+async fn update(client: web::Data<Client>) -> impl Responder {
+    let system_time = SystemTime::now();
+    let since_the_epoch = system_time
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards");
+    let current_time_millis = since_the_epoch.as_millis();
+    let arbitrary_id = format!("id{}", current_time_millis % 1000);
+    let arbitrary_state = format!("state{}", current_time_millis % 7);
+    client.set_state(&arbitrary_id, &arbitrary_state);
+    HttpResponse::Ok().body(format!("{}: {}", arbitrary_id, arbitrary_state))
 }
 
 #[derive(Clone)]
