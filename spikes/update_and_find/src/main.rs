@@ -13,14 +13,14 @@ impl Client {
         Client { redis_client }
     }
 
-    fn set_state(&self, id: &String, state: &String) {
+    fn set_state(&self, id: &str, state: &str) {
         use redis::Commands;
         let mut con = self.redis_client.get_connection().unwrap();
 
-        con.hset::<&str, &String, &String, u8>("states", id, state).unwrap();
+        con.hset::<&str, &str, &str, u8>("states", id, state).unwrap();
     }
 
-    fn find_state(&self, id: &String) -> Option<String> {
+    fn find_state(&self, id: &str) -> Option<String> {
         use redis::Commands;
         let mut con = self.redis_client.get_connection().unwrap();
 
