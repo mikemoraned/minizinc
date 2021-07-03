@@ -19,7 +19,7 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(list))
             .route("/update", web::post().to(update))
     })
-        .bind(("127.0.0.1", 8080))?
+        .bind(("0.0.0.0", 8080))?
         .run()
         .await
 }
