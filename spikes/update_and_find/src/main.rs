@@ -1,7 +1,9 @@
 use std::collections::HashSet;
 use std::env;
+use actix_web::{web, App, HttpRequest, HttpServer, Responder};
 
-fn main() {
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
     let redis_url = env::var("FLY_REDIS_CACHE_URL").unwrap();
     println!("Using {}", redis_url);
     let redis_client = redis::Client::open(redis_url).unwrap();
@@ -9,7 +11,22 @@ fn main() {
     for (id, state) in client.find_all_states() {
         println!("{}: {}", id, state);
     }
+
+    HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(greet))
+            .route("/{name}", web::get().to(greet))
+    })
+        .bind(("127.0.0.1", 8080))?
+        .run()
+        .await
 }
+
+async fn greet(req: HttpRequest) -> impl Responder {
+    let name = req.match_info().get("name").unwrap_or("World");
+    format!("Hello {}!", &name)
+}
+
 
 struct Client {
     redis_client: redis::Client
