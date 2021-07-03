@@ -12,22 +12,25 @@ async fn main() -> std::io::Result<()> {
         println!("{}: {}", id, state);
     }
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
-            .route("/", web::get().to(greet))
-            .route("/{name}", web::get().to(greet))
+            .data(client.clone())
+            .route("/", web::get().to(list))
     })
         .bind(("127.0.0.1", 8080))?
         .run()
         .await
 }
 
-async fn greet(req: HttpRequest) -> impl Responder {
-    let name = req.match_info().get("name").unwrap_or("World");
-    format!("Hello {}!", &name)
+async fn list(client: web::Data<Client>) -> impl Responder {
+    client.find_all_states()
+        .iter()
+        .map(|(id, state)| format!("{}: {}", id, state))
+        .collect::<Vec<String>>()
+        .join("\n")
 }
 
-
+#[derive(Clone)]
 struct Client {
     redis_client: redis::Client
 }
