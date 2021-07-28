@@ -4,6 +4,8 @@ use actix_web::{web, App, HttpServer, Responder};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    println!("starting up");
+
     HttpServer::new(move || {
         App::new()
             .route("/", web::get().to(list))
