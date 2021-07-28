@@ -11,6 +11,8 @@ RUN cargo build --release
 
 # Copy the rest
 COPY . .
+# Rebuild with real source
+RUN cargo build --release
 # Build (install) the actual binaries
 RUN cargo install --path .
 
