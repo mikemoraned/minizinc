@@ -1,0 +1,38 @@
+# fly.toml file generated for small-hill-5910 on 2021-07-28T17:22:00+01:00
+
+app = "small-hill-5910"
+
+kill_signal = "SIGINT"
+kill_timeout = 5
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+  cmd = "./spawn_minizinc"
+
+[[services]]
+  http_checks = []
+  internal_port = 8080
+  protocol = "tcp"
+  script_checks = []
+
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "30s"
+    interval = "1m"
+    restart_limit = 6
+    timeout = "10s"
