@@ -13,6 +13,8 @@ RUN cargo build --release
 
 # Copy the rest
 COPY . .
+RUN ls -alR src
+RUN md5sum src/*.rs
 # Build (install) the actual binaries
 RUN cargo install --path .
 
