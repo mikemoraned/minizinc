@@ -73,7 +73,7 @@ pub fn graphql_server(parameters: &MinizincParameters) -> Result<Server, std::io
 
     println!("{}", &schema.sdl());
 
-    println!("Playground: http://localhost:8000");
+    println!("Playground: http://localhost:8080");
 
     Ok(HttpServer::new(move || {
         App::new()
@@ -81,6 +81,6 @@ pub fn graphql_server(parameters: &MinizincParameters) -> Result<Server, std::io
             .service(web::resource("/").guard(guard::Post()).to(index))
             .service(web::resource("/").guard(guard::Get()).to(index_playground))
     })
-        .bind("127.0.0.1:8000")?
+        .bind("0.0.0.0:8080")?
         .run())
 }
