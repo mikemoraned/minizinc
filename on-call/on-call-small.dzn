@@ -1,0 +1,11 @@
+PERSON = { Bob, Sue, Robert, Alice };
+
+num_slots = 3;
+availability = array2d(PERSON, SLOT,
+    %     s1,    s2,    s3
+    [|  true,  true,  true    % Bob
+     | false, false, false    % Sue
+     |  true,  true,  true    % Robert
+     |  true,  true,  true |] % Alice
+);
+
