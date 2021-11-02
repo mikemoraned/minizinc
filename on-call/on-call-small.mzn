@@ -8,3 +8,6 @@ array[PERSON,SLOT] of bool: availability;
 % what we are deciding
 array[SLOT] of var PERSON: assignment;
 
+% constraints
+constraint forall(slot in SLOT, person in PERSON)
+  (assignment[slot] = person -> availability[person,slot]) 
