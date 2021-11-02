@@ -1,12 +1,20 @@
-PERSON = { Bob, Sue, Robert, Alice };
+PERSON = { G, M, L, S };
 
-num_slots = 3;
+num_slots = 4;
 num_rotas = 2;
-availability = array2d(PERSON, SLOT,
-    % s1,s2,s3
-    [| 0, 1, 0    % Bob
-     | 1, 0, 0    % Sue
-     | 2, 1, 1    % Robert
-     | 2, 2, 2 |] % Alice
-);
 
+availability = array3d(PERSON, ROTA, SLOT, [
+  % s1,s2,s3,s4
+  % G:
+    Y, Y, Y, Y, % Rota 1
+    N, N, N, N, % Rota 2     
+  % M:
+    N, N, N, N, % Rota 1
+    Y, Y, Y, Y, % Rota 2     
+  % L:
+    Y, Y, Y, Y, % Rota 1
+    Y, Y, Y, Y, % Rota 2     
+  % S:
+    N, N, N, N, % Rota 1
+    N, N, N, N, % Rota 2     
+]);
