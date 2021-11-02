@@ -1,0 +1,24 @@
+PERSON = { G, M, K, L, S };
+
+num_slots = 6 * 2;
+num_rotas = 2;
+
+availability = array3d(PERSON, ROTA, SLOT, [
+  % day1:  day2:  day3:  day4:  day5:  day6:
+  % am,pm, am,pm  am,pm  am,pm  am,pm  am,pm
+  % G:
+     Y, Y,  Y, Y,  Y, Y,  Y, Y,  n, n,  n, n, % Rota 1
+     n, n,  n, n,  n, n,  n, n,  n, n,  n, n, % Rota 2     
+  % M:
+     n, n,  n, n,  n, n,  n, n,  n, n,  n, n, % Rota 1
+     Y, Y,  Y, Y,  Y, Y,  Y, Y,  n, n,  n, n, % Rota 2     
+  % K:
+     n, n,  n, n,  n, n,  n, n,  Y, Y,  Y, Y, % Rota 1
+     n, n,  n, n,  n, n,  n, n,  Y, Y,  Y, Y, % Rota 2     
+  % L:
+     Y, Y,  Y, Y,  Y, Y,  Y, Y,  Y, n,  n, Y, % Rota 1
+     Y, Y,  Y, Y,  Y, Y,  Y, Y,  Y, n,  n, Y, % Rota 2     
+  % S:
+     n, n,  n, n,  n, n,  Y, n,  n, n,  Y, n, % Rota 1
+     n, n,  n, n,  n, n,  n, n,  n, n,  n, n, % Rota 2     
+]);
