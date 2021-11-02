@@ -1,11 +1,12 @@
 PERSON = { Bob, Sue, Robert, Alice };
 
 num_slots = 3;
+num_rotas = 2;
 availability = array2d(PERSON, SLOT,
-    %     s1,    s2,    s3
-    [| false,  true, false    % Bob
-     | false, false, false    % Sue
-     |  true,  true,  true    % Robert
-     |  true,  true,  true |] % Alice
+    % s1,s2,s3
+    [| 0, 1, 0    % Bob
+     | 1, 0, 0    % Sue
+     | 2, 1, 1    % Robert
+     | 2, 2, 2 |] % Alice
 );
 
