@@ -1,0 +1,7 @@
+MINIZINC := "/Applications/MiniZincIDE.app/Contents/Resources/minizinc"
+MZN := "../../team-assignment/team-assignment.mzn"
+DZN := "../../team-assignment/team-assignment.dzn"
+FZN := "team-assignment.fzn"
+
+fzn:
+    {{MINIZINC}} --compile --solver default --no-output-ozn --model {{MZN}} --data {{DZN}} --output-fzn-to-file {{FZN}}
