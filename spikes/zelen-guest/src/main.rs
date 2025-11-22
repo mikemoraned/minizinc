@@ -42,6 +42,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("AST: {:#?}", ast);
 
     let translated = zelen::Translator::translate_with_vars(&ast)?;
+    for (name, var_id) in &translated.int_vars {
+        println!("Variable: {} -> {:?}", name, var_id);
+    }
+    for (name, var_id) in &translated.int_var_arrays {
+        println!("Variable: {} -> {:?}", name, var_id);
+    }
+
+    let solution = translated.model.solve()?;
+    println!("Solution: {:#?}", solution);
 
     Ok(())
 }
