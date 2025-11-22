@@ -7,6 +7,12 @@ array[1..T] of int: capacity;
 
 array[1..G] of var 1..T: table_of;
 
+% Capacity constraint
+constraint
+  forall(t in 1..T)(
+    sum(g in 1..G)(bool2int(table_of[g] = t)) <= capacity[t]
+  );
+
 % Objective: maximise sum of affinities for pairs at same table
 var int: total_affinity =
    sum(g in 1..G, h in 1..G where g < h)(
@@ -14,3 +20,5 @@ var int: total_affinity =
    );
    
 solve maximize total_affinity;
+
+output ["Guest " ++ show(g) ++ " → Table " ++ show(table_of[g]) ++ "\n" | g in 1..G ];
