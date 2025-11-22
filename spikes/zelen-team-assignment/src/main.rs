@@ -1,33 +1,26 @@
 use std::fs;
 use tracing::{error, info};
 
+/*
+This doesn't yet work as Zelen doesn't yet support sets or enums.
+
+We get this error:
+```
+2025-11-22T11:30:23.824633Z  INFO zelen_team_assignment: Minizinc code read from ./team-assignment.mzn
+2025-11-22T11:30:23.824746Z ERROR zelen_team_assignment: ✗ Parsing failed: Error at line 6, column 4: Expected Colon, found Of
+  set of int: PRIORITY = 0..card(PROJECT);
+```
+*/
+
 fn main() {
     tracing_subscriber::fmt::init();
 
-    let mzn_path = "../../team-assignment/team-assignment.mzn";
+    let mzn_path = "./team-assignment.mzn";
     let mzn_code =
         fs::read_to_string(mzn_path).expect(format!("Failed to read {mzn_path}").as_str());
     info!("Minizinc code read from {mzn_path}");
 
-    let dzn_path = "./team-assignment.dzn";
-    let dzn_code =
-        fs::read_to_string(dzn_path).expect(format!("Failed to read {dzn_path}").as_str());
-    info!("Minizinc code read from {dzn_path}");
-
-    let combined_code = match zelen::load_dzn_data(&dzn_code, &mzn_code) {
-        Ok(c) => {
-            info!("✓ combining successful!");
-            c
-        }
-        Err(e) => {
-            error!("✗ combining failed: {}", e);
-            std::process::exit(1);
-        }
-    };
-
-    println!("Combined Minizinc Code:\n{}", combined_code);
-
-    let ast = match zelen::parse(&combined_code) {
+    let ast = match zelen::parse(&mzn_code) {
         Ok(ast) => {
             info!("✓ Parsing successful!");
             info!("AST contains {} items", ast.items.len());
