@@ -1,7 +1,9 @@
 use std::fs;
 use tracing::{error, info};
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    tracing_subscriber::fmt::init();
+
     let mzn_path = "./minizinc/guest.mzn";
     let mzn_code =
         fs::read_to_string(mzn_path).expect(format!("Failed to read {mzn_path}").as_str());
@@ -36,4 +38,10 @@ fn main() {
             std::process::exit(1);
         }
     };
+
+    println!("AST: {:#?}", ast);
+
+    let translated = zelen::Translator::translate_with_vars(&ast)?;
+
+    Ok(())
 }
