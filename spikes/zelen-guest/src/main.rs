@@ -51,6 +51,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let solution = translated.model.solve()?;
     println!("Solution: {:#?}", solution);
+    for (name, var_id) in &translated.int_vars {
+        if let selen::variables::Val::ValI(value) = solution[*var_id] {
+            println!("Variable: {} = {}", name, value);
+        }
+    }
+    for (name, var_ids) in &translated.int_var_arrays {
+        for var_id in var_ids {
+            if let selen::variables::Val::ValI(value) = solution[*var_id] {
+                println!("Variable: {} = {}", name, value);
+            }
+        }
+    }
 
     Ok(())
 }
